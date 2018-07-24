@@ -2,48 +2,43 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="96dp">
-<ImageView
-    android:layout_width="96dp"
-    android:layout_height="96dp"
-    android:id="@+id/iv_app"/>
+    android:layout_height="72dp"
+    android:background="@drawable/background_item"
+    >
+    <ImageView
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/iv_app"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_name_app"
+        android:text="abc"
         android:textSize="16sp"
         android:layout_toRightOf="@id/iv_app"
         android:layout_marginTop="16dp"
-        android:layout_marginLeft="8dp"
-        android:textColor="@color/colorAccent"
-       />
+        android:layout_marginLeft="16dp"
+        android:textColor="#de000000"
+        />
     <TextView
-        android:id="@+id/tv_package_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_toRightOf="@id/iv_app"
-        android:textColor="@color/colorAccent"
-        android:layout_below="@id/tv_name_app"/>
-    <TextView
+        android:layout_below="@id/tv_name_app"
         android:id="@+id/tv_name_version_app"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:text="1.2"
-        android:layout_alignParentBottom="true"
+        android:textSize="13sp"
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@id/iv_app"
+        android:textColor="#8f000000"/>
+    <Button
+        android:layout_width="61dp"
+        android:layout_height="30dp"
+        android:text="Update"
+        android:textColor="#ffffff"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp"
-        android:gravity="center"
-        android:textColor="@color/colorAccent"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Update Version"
-        android:layout_alignParentRight="true"
-        android:textColor="@color/colorPrimary"
-        android:id="@+id/tv_update_version"/>
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="21dp"
+        android:background="@drawable/button_update"
+        android:id="@+id/btn_update"/>
 </RelativeLayout>

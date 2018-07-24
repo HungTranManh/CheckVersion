@@ -15,6 +15,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ListView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -27,93 +29,70 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import checkversion.solar.com.checkversion.adapter.AppAdapter;
+import checkversion.solar.com.checkversion.MainActivity;
+import checkversion.solar.com.checkversion.adapter.DataAdapter;
 import checkversion.solar.com.checkversion.itemdata.ItemDataApp;
 import checkversion.solar.com.checkversion.R;
 
-public class ShowListFragment extends Fragment implements AppAdapter.IAppAdapter {
+public class ShowListFragment extends Fragment implements DataAdapter.IDataAdapter {
     private List<ItemDataApp> itemDataApps;
-    private RecyclerView rcvApp;
-    private AppAdapter adapter;
+    //    private RecyclerView rcvApp;
+//    private AppAdapter adapter;
+    private ListView listView;
+    private DataAdapter adapter;
+    private Button btnBack;
     private Executor executor;
-    private AsyncTask<Integer, Void, Void> asyncCheckVersion;
+
     private static final String TAG = ShowListFragment.class.getName();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_show_list,container,false);
+        View view = inflater.inflate(R.layout.fragment_show_list, container, false);
         inits(view);
-        return  view;
+        return view;
+    }
+
+    public void setItemDataApps(List<ItemDataApp> itemDataApps) {
+        this.itemDataApps = itemDataApps;
     }
 
     private void inits(View view) {
         executor = Executors.newFixedThreadPool(3);
-        adapter = new AppAdapter(this);
-        itemDataApps = new ArrayList<>();
-        rcvApp = view.findViewById(R.id.rcv_app);
-        checkVersion(itemDataApps);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        rcvApp.setLayoutManager(linearLayoutManager);
+//        adapter = new AppAdapter(this);
+        adapter = new DataAdapter(this);
+        listView = view.findViewById(R.id.lv_app);
+//        rcvApp = view.findViewById(R.id.rcv_app);
+        btnBack = view.findViewById(R.id.btn_back);
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+//        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+//        rcvApp.setLayoutManager(linearLayoutManager);
+        listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-        destroyAsyn();
-    }
-    private void checkVersion(List<ItemDataApp> itemDataApps) {
-        for (int i=0;i<itemDataApps.size();i++) {
-            getVersionApp(i);
-        }
-        rcvApp.setAdapter(adapter);
-    }
-
-    private void getVersionApp(int position) {
-//            Document document=Jsoup.parse("https://play.google.com/store/apps/details?id="
-//                    + packageName);
-//            Elements elements=document.select("div.hAyfc");
-//            String CurrentVersion=elements.get(3).selectFirst("span").attr("span");
-        asyncCheckVersion = new AsyncTask<Integer, Void, Void>() {
+        btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
-            protected Void doInBackground(Integer... position) {
-                String newVersion=null;
-                try {
-                    Document document = Jsoup.connect("https://play.google.com/store/apps/details?id=" + itemDataApps.get(position[0]).getNamePackage() + "&hl=en")
-                            .timeout(30000)
-                            .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                            .referrer("http://www.google.com")
-                            .get();
-                    if (document != null) {
-                        Elements element = document.getElementsContainingOwnText("Current Version");
-                        for (Element ele : element) {
-                            if (ele.siblingElements() != null) {
-                                Elements sibElemets = ele.siblingElements();
-                                for (Element sibElemet : sibElemets) {
-                                    newVersion = sibElemet.text();
-                                }
-                            }
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if(newVersion!=null&&newVersion.equals(itemDataApps.get(position[0]).getNameVersionApp())){
-                    itemDataApps.get(position[0]).setFragVersion(true);
-                }else if(newVersion==null){
-                    itemDataApps.get(position[0]).setFragVersion(true);
-                }
-                else {
-                    itemDataApps.get(position[0]).setFragVersion(false);
-                }
-                return null;
+            public void onClick(View view) {
+                ((MainActivity) getActivity()).backFragment();
             }
-
-
-        }.execute(position);
+        });
     }
+
+
 
     @Override
     public int getItems() {
         return itemDataApps.size();
     }
+
+    @Override
+    public void clickItem(int position) {
+        ((MainActivity)getActivity()).openFragmentInformation(itemDataApps.get(position));
+    }
+    @Override
+    public void showDialogDownload(String namePackage) {
+        ((MainActivity)getActivity()).showUpdate(namePackage);
+    }
+
 
     @Override
     public ItemDataApp getItemData(int position) {
@@ -129,12 +108,7 @@ public class ShowListFragment extends Fragment implements AppAdapter.IAppAdapter
         }
         return null;
     }
-    private void destroyAsyn(){
-        if(asyncCheckVersion!=null){
-            asyncCheckVersion.cancel(true);
 
-        }
-    }
 
 }
 

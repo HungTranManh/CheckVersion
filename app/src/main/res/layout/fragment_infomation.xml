@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#4eacea">
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="20dp"
+            android:layout_height="13dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="22dp"
+            android:background="@drawable/icon_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="19dp"
+            android:text="Information"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="24dp">
+
+        <ImageView
+            android:id="@+id/iv_app"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginLeft="16dp" />
+
+        <TextView
+            android:id="@+id/tv_name_app"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_toRightOf="@id/iv_app"
+            android:text="abc"
+            android:textColor="#de000000"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_name_version_app"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_name_app"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@id/iv_app"
+            android:text="sdasda"
+            android:textColor="#8f000000"
+            android:textSize="13sp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="84dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/button_update"
+            android:gravity="center"
+            android:id="@+id/btn_update"
+            android:text="Update"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btn_open"
+            android:layout_width="84dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/buton_open"
+            android:gravity="center"
+            android:text="Open"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+
+        <Button
+            android:layout_width="84dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:id="@+id/btn_share"
+            android:background="@drawable/bg_share"
+            android:gravity="center"
+            android:text="Share"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Storage"
+        android:textColor="#de000000"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="16dp"
+
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:id="@+id/tv_storage"
+        android:layout_marginLeft="16dp"
+        android:textSize="13sp"
+        android:textColor="#8f000000"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Memory Cache"
+        android:textColor="#de000000"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="16dp"
+
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:id="@+id/tv_memory_cache"
+        android:layout_marginLeft="16dp"
+        android:textSize="13sp"
+        android:textColor="#8f000000"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Date"
+        android:textColor="#de000000"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="16dp"
+
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:id="@+id/tv_date"
+        android:layout_marginLeft="16dp"
+        android:textSize="13sp"
+        android:textColor="#8f000000"/>
+
+
+</LinearLayout>
