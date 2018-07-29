@@ -16,6 +16,7 @@ import checkversion.solar.com.checkversion.fragment.LoadDataFragment;
 import checkversion.solar.com.checkversion.fragment.ShowListFragment;
 import checkversion.solar.com.checkversion.fragment.StartFragment;
 import checkversion.solar.com.checkversion.itemdata.ItemDataApp;
+import checkversion.solar.com.checkversion.service.VersionService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         init();
     }
     private void init() {
-
+        startService();
         openFragmentStart();
 
     }
@@ -55,9 +56,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void openFragmentShowList(List<ItemDataApp> lstItem) {
+    public void openFragmentShowList() {
         ShowListFragment showListFragment = new ShowListFragment();
-        showListFragment.setItemDataApps(lstItem);
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         Fragment fragment=getSupportFragmentManager().findFragmentByTag(LoadDataFragment.class.getSimpleName());
@@ -96,7 +96,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
+private void startService(){
+        Intent intent=new Intent();
+        intent.setClass(this, VersionService.class);
+        startService(intent);
+}
     public void backFragment() {
         super.onBackPressed();
     }

@@ -1,10 +1,14 @@
 package checkversion.solar.com.checkversion.fragment;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -33,6 +37,8 @@ import checkversion.solar.com.checkversion.MainActivity;
 import checkversion.solar.com.checkversion.adapter.DataAdapter;
 import checkversion.solar.com.checkversion.itemdata.ItemDataApp;
 import checkversion.solar.com.checkversion.R;
+import checkversion.solar.com.checkversion.service.MyBirder;
+import checkversion.solar.com.checkversion.service.VersionService;
 
 public class ShowListFragment extends Fragment implements DataAdapter.IDataAdapter {
     private List<ItemDataApp> itemDataApps;
@@ -41,8 +47,8 @@ public class ShowListFragment extends Fragment implements DataAdapter.IDataAdapt
     private ListView listView;
     private DataAdapter adapter;
     private Button btnBack;
-    private Executor executor;
-
+    private ServiceConnection connection;
+    private VersionService versionService;
     private static final String TAG = ShowListFragment.class.getName();
 
     @Nullable
@@ -53,13 +59,9 @@ public class ShowListFragment extends Fragment implements DataAdapter.IDataAdapt
         return view;
     }
 
-    public void setItemDataApps(List<ItemDataApp> itemDataApps) {
-        this.itemDataApps = itemDataApps;
-    }
 
     private void inits(View view) {
-        executor = Executors.newFixedThreadPool(3);
-//        adapter = new AppAdapter(this);
+        connectionService();
         adapter = new DataAdapter(this);
         listView = view.findViewById(R.id.lv_app);
 //        rcvApp = view.findViewById(R.id.rcv_app);
@@ -68,7 +70,6 @@ public class ShowListFragment extends Fragment implements DataAdapter.IDataAdapt
 //        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 //        rcvApp.setLayoutManager(linearLayoutManager);
         listView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,16 +78,37 @@ public class ShowListFragment extends Fragment implements DataAdapter.IDataAdapt
         });
     }
 
+    private  void connectionService(){
+        connection=new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                MyBirder myBirder=(MyBirder)iBinder;
+                versionService=myBirder.getVersionService();
+                adapter.notifyDataSetChanged();
+            }
 
+            @Override
+            public void onServiceDisconnected(ComponentName componentName) {
 
+            }
+        };
+        Intent intent=new Intent();
+        intent.setClass(getContext(),VersionService.class);
+        getContext().bindService(intent,connection,getContext().BIND_AUTO_CREATE);
+    }
     @Override
     public int getItems() {
-        return itemDataApps.size();
+
+        if(versionService==null) {
+            return  0;
+        }
+        return versionService.getSizeItem();
+
     }
 
     @Override
     public void clickItem(int position) {
-        ((MainActivity)getActivity()).openFragmentInformation(itemDataApps.get(position));
+        ((MainActivity)getActivity()).openFragmentInformation(versionService.getItemData(position));
     }
     @Override
     public void showDialogDownload(String namePackage) {
@@ -96,13 +118,19 @@ public class ShowListFragment extends Fragment implements DataAdapter.IDataAdapt
 
     @Override
     public ItemDataApp getItemData(int position) {
-        return itemDataApps.get(position);
+        if(versionService==null){
+            return null;
+        }
+        return versionService.getItemData(position);
     }
 
     @Override
     public Drawable getIconApp(int position) {
+        if (versionService==null){
+            return null;
+        }
         try {
-            return getActivity().getPackageManager().getApplicationIcon(itemDataApps.get(position).getNamePackage());
+            return getActivity().getPackageManager().getApplicationIcon(versionService.getItemData(position).getNamePackage());
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
