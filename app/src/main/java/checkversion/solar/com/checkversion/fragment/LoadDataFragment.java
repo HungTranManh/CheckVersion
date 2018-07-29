@@ -44,7 +44,7 @@ public class LoadDataFragment extends Fragment {
     private CustomRadarView customRadarView;
     private TextView tvNumberUpdate, tvNameApp;
     private ProgressBar progressBar;
-    private AsyncTask<Void, Integer, Void> checkVersion;
+    private AsyncTask<Void, Void, Void> checkVersion;
     private Handler handler = new Handler();
     private ImageView ivIcon;
     private Button btnBack;
@@ -59,7 +59,6 @@ public class LoadDataFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_load_data, container, false);
         inits(view);
         return view;
-
     }
 
     private void inits(View view) {
@@ -75,7 +74,6 @@ public class LoadDataFragment extends Fragment {
                 ((MainActivity) getActivity()).openFragmentStart();
             }
         });
-
         connectService();
     }
 
@@ -87,9 +85,8 @@ public class LoadDataFragment extends Fragment {
                 versionService = birder.getVersionService();
                 progressBar.setMax(versionService.getSizeItem());
                 progress = 0;
-                runProgressBar();
+                checkVersion();
             }
-
             @Override
             public void onServiceDisconnected(ComponentName componentName) {
                 versionService = null;
@@ -105,7 +102,7 @@ public class LoadDataFragment extends Fragment {
         @Override
         public void run() {
                 progressBar.setProgress(progress);
-                tvNumberUpdate.setText("Update wait:" + progress);
+                tvNumberUpdate.setText("Update wait:" + (progress+1));
                 ivIcon.setImageDrawable(drawable(versionService.getItemData(progress).getNamePackage()));
                 tvNameApp.setText(versionService.getItemData(progress).getNameApp());
                 handler.postDelayed(runnable, 300);
@@ -113,9 +110,6 @@ public class LoadDataFragment extends Fragment {
                 ((MainActivity) getActivity()).openFragmentShowList();
                 handler.removeCallbacks(runnable);
             }
-                progress++;
-
-
 
         }
 
@@ -124,10 +118,64 @@ public class LoadDataFragment extends Fragment {
     public void runProgressBar() {
         handler.removeCallbacks(runnable);
         handler.post(runnable);
-
     }
 
+    private void checkVersion(){
+        runProgressBar();
+        checkVersion=new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                for (int i = 0; i < versionService.getSizeItem(); i++) {
+                    String newVersion = null;
+                    try {
+                        Document document = Jsoup.connect("https://play.google.com/store/apps/details?id=" + versionService.getItemData(i).getNamePackage() + "&hl=en")
+                                .timeout(20000)
+                                .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                                .referrer("http://www.google.com")
+                                .get();
+                        if (document != null) {
+                            Elements element = document.getElementsContainingOwnText("Current Version");
+                            for (Element ele : element) {
+                                if (ele.siblingElements() != null) {
+                                    Elements sibElemets = ele.siblingElements();
+                                    for (Element sibElemet : sibElemets) {
+                                        newVersion = sibElemet.text();
+                                    }
+                                }
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (newVersion != null && newVersion.equals(versionService.getItemData(i).getNameVersionApp())) {
+                        versionService.setFlagVersion(i,true);
+                    } else if (newVersion == null) {
+                        versionService.setFlagVersion(i,true);
+                    } else if (!versionService.getItemData(i).getNameVersionApp().equals(newVersion) && newVersion != null) {
+                        versionService.setFlagVersion(i,false);
+                    }
+                    if (newVersion != null && !(isVersion(newVersion))) {
+                        versionService.setFlagVersion(i,true);
+                    }
+                    progress++;
+                }
+                return null;
+            }
 
+            @Override
+            protected void onProgressUpdate(Void... values) {
+                super.onProgressUpdate(values);
+            }
+        }.execute();
+    }
+    private  boolean isVersion(String nameVersion){
+        for (int i=0;i<nameVersion.length();i++){
+            if(48<=nameVersion.charAt(i)&&nameVersion.charAt(i)<=57){
+                return true;
+            }
+        }
+        return false;
+    }
     private Drawable drawable(String packageName) {
         try {
             return getActivity().getPackageManager().getApplicationIcon(packageName);
@@ -136,11 +184,9 @@ public class LoadDataFragment extends Fragment {
         }
         return null;
     }
-
     @Override
     public void onDestroy() {
         handler.removeCallbacks(runnable);
         super.onDestroy();
-
     }
 }

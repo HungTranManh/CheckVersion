@@ -51,7 +51,7 @@ public class DataAdapter extends BaseAdapter {
         tvNameApp=view.findViewById(R.id.tv_name_app);
         tvNameVersion=view.findViewById(R.id.tv_name_version_app);
         btnUpdate=view.findViewById(R.id.btn_update);
-        final ItemDataApp item=iDataAdapter.getItemData(i);
+        ItemDataApp item=iDataAdapter.getItemData(i);
         ivApp.setImageDrawable(iDataAdapter.getIconApp(i));
         tvNameApp.setText(item.getNameApp());
         tvNameVersion.setText("ver:"+item.getNameVersionApp());
@@ -65,7 +65,7 @@ public class DataAdapter extends BaseAdapter {
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                iDataAdapter.showDialogDownload(item.getNamePackage());
+                iDataAdapter.showDialogDownload(iDataAdapter.getItemData(i).getNamePackage());
                 btnUpdate.setVisibility(View.INVISIBLE);
             }
         });

@@ -40,7 +40,7 @@ public class VersionService extends Service {
         return START_STICKY;
     }
 
-    private void updateVersion(String namePackage){
+    public void updateVersion(String namePackage){
         asynUpdate=new AsyncTask<String, Void, Void>() {
             String newVersion=null;
             @Override
@@ -64,7 +64,6 @@ public class VersionService extends Service {
             protected void onProgressUpdate(Void... values) {
                 super.onProgressUpdate(values);
             }
-
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
@@ -94,63 +93,10 @@ public class VersionService extends Service {
                 }
             }
         }
-        checkVersion();
-    }
-    private void checkVersion(){
-        checkVersion=new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                for (int i = 0; i < itemDataApps.size(); i++) {
-                    String newVersion = null;
-                    try {
-                        Document document = Jsoup.connect("https://play.google.com/store/apps/details?id=" + itemDataApps.get(i).getNamePackage() + "&hl=en")
-                                .timeout(20000)
-                                .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                                .referrer("http://www.google.com")
-                                .get();
-                        if (document != null) {
-                            Elements element = document.getElementsContainingOwnText("Current Version");
-                            for (Element ele : element) {
-                                if (ele.siblingElements() != null) {
-                                    Elements sibElemets = ele.siblingElements();
-                                    for (Element sibElemet : sibElemets) {
-                                        newVersion = sibElemet.text();
-                                    }
-                                }
-                            }
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    if (newVersion != null && newVersion.equals(itemDataApps.get(i).getNameVersionApp())) {
-                        itemDataApps.get(i).setFragVersion(true);
-                    } else if (newVersion == null) {
-                        itemDataApps.get(i).setFragVersion(true);
-                    } else if (!itemDataApps.get(i).getNameVersionApp().equals(newVersion) && newVersion != null) {
-                        itemDataApps.get(i).setFragVersion(false);
-                    }
-                    if (newVersion != null && !(isVersion(newVersion))) {
-                        itemDataApps.get(i).setFragVersion(true);
-                    }
 
-                }
-                return null;
-            }
+    }
 
-            @Override
-            protected void onProgressUpdate(Void... values) {
-                super.onProgressUpdate(values);
-            }
-        }.execute();
-    }
-    private  boolean isVersion(String nameVersion){
-        for (int i=0;i<nameVersion.length();i++){
-            if(48<=nameVersion.charAt(i)&&nameVersion.charAt(i)<=57){
-                return true;
-            }
-        }
-        return false;
-    }
+
     public void  setFlagVersion(int position,boolean is){
         itemDataApps.get(position).setFragVersion(is);
     }

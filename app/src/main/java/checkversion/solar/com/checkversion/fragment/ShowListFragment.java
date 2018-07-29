@@ -111,8 +111,8 @@ public class ShowListFragment extends Fragment implements DataAdapter.IDataAdapt
         ((MainActivity)getActivity()).openFragmentInformation(versionService.getItemData(position));
     }
     @Override
-    public void showDialogDownload(String namePackage) {
-        ((MainActivity)getActivity()).showUpdate(namePackage);
+    public void showDialogDownload(String namePackage){
+     versionService.updateVersion(namePackage);
     }
 
 
